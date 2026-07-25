@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Surprise! 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --primary-color: #3b82f6; 
+            --primary-hover: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            margin: 0;
+            padding: 1rem;
+        }
+
+        /* Background Layers */
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: top center;
+            z-index: -2;
+            transition: opacity 1.5s ease-in-out, transform 10s linear;
+        }
+        
+        .bg-1 {
+            background-image: url('fb5032c7461efafe0676e45440b1105e.jpg');
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .bg-2 {
+            background-image: url('6a578e74d2e707fe5d916b2b10986fb4.jpg');
+            opacity: 0;
+            transform: scale(1);
+        }
+
+        body.show-bg-2 .bg-1 {
+            opacity: 0;
+            transform: scale(1);
+        }
+
+        body.show-bg-2 .bg-2 {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: transparent;
+            border: none;
+            min-height: 500px;
+            border-radius: 24px;
+            box-shadow: none;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 0; /* Handled by slide */
+            text-align: center;
+            z-index: 1;
+            perspective: 1000px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Staggered Animations */
+        .slide > * {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .slide.active > * {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .slide.active .icon { transition-delay: 0.1s; }
+        .slide.active p { transition-delay: 0.25s; }
+        .slide.active textarea { transition-delay: 0.35s; }
+        .slide.active button { transition-delay: 0.45s; }
+
+        .icon {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+
+        button:hover::after {
+            left: 150%;
+        }
+
+        button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.7);
+        }
+
+        button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1rem;
+            color: #fff;
+            resize: none;
+            margin-bottom: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            outline: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        textarea::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(15, 23, 42, 0.95);
+            color: #e2e8f0;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 90%;
+            width: max-content;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.error {
+            border-color: #ef4444; 
+            color: #fee2e2;
+        }
+
+        /* Responsive Mobile Adjustments */
+        @media (max-width: 600px) {
+            body {
+                align-items: center;
+                padding: 1rem;
+            }
+            .container {
+                min-height: 460px;
+                height: auto;
+            }
+            .slide {
+                padding: 1.5rem;
+                justify-content: flex-end;
+                padding-bottom: 2.5rem;
+            }
+            .icon {
+                font-size: 3rem;
+                margin-bottom: 0.75rem;
+            }
+            p {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            textarea {
+                height: 110px;
+                margin-bottom: 1.25rem;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg bg-1"></div>
+    <div class="bg bg-2"></div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="container">
+        <div class="slide active" id="slide1">
+            <div class="icon">💌</div>
+            <p>Hai, ada sesuatu yang penting nih bro...</p>
+            <button onclick="nextSlide(1)">Coba Buka 🫣</button>
+        </div>
+
+        <div class="slide" id="slide2">
+            <div class="icon">🤔</div>
+            <p>Coba tebak, hari ini hari apa hayo?</p>
+            <button onclick="nextSlide(2)">Nyerah deh, emang hari apa? 🙄</button>
+        </div>
+
+        <div class="slide" id="slide3">
+            <div class="icon">🎉</div>
+            <p>Yaps! Hari ini aku ulang tahun!<br><br>Awas aja kalau pura-pura lupa atau pura-pura miskin! 🤪</p>
+            <button onclick="nextSlide(3)">Wah, HBD! Terus? 🎁</button>
+        </div>
+
+        <div class="slide" id="slide4">
+            <div class="icon">🎁</div>
+            <p style="font-size: 0.95rem; margin-bottom: 0.75rem;">Berhubung lu udah inget, sekarang tulis doa dan ucapan paling keren dari lu di bawah ini!</p>
+            <textarea id="ucapan" placeholder="Tulis ucapan lu di sini..."></textarea>
+            <button onclick="copyAndSend()">Salin & Kirim 📋</button>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+
+        function nextSlide(current) {
+            document.getElementById(`slide${current}`).classList.remove('active');
+            document.getElementById(`slide${current + 1}`).classList.add('active');
+            
+            clickCount++;
+            
+            if (clickCount >= 2) {
+                document.body.classList.add('show-bg-2');
+            }
+        }
+
+        let notifTimeout;
+        function showNotification(msg, isError = false) {
+            const notif = document.getElementById('notification');
+            notif.textContent = msg;
+            
+            if (isError) {
+                notif.classList.add('error');
+            } else {
+                notif.classList.remove('error');
+            }
+            
+            notif.classList.add('show');
+            
+            clearTimeout(notifTimeout);
+            notifTimeout = setTimeout(() => {
+                notif.classList.remove('show');
+            }, 5000);
+        }
+
+        function copyAndSend() {
+            const textarea = document.getElementById('ucapan');
+            const text = textarea.value.trim();
+
+            if (!text) {
+                showNotification("Eits! Tulis dulu dong ucapannya sebelum disalin! 😜", true);
+                textarea.focus();
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification("Yeay! Ucapan berhasil disalin. Sekarang tinggal paste dan kirim langsung ke WhatsApp gw ya! Tengkyu bro! 🔥");
+                textarea.value = ''; 
+            }).catch(err => {
+                textarea.select();
+                document.execCommand('copy');
+                showNotification("Yeay! Ucapan berhasil disalin. Sekarang tinggal paste dan kirim langsung ke WhatsApp gw ya! Tengkyu bro! 🔥");
+                textarea.value = '';
+            });
+        }
+    </script>
+</body>
+</html>
